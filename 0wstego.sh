@@ -8,7 +8,6 @@
 #/ Options:
 #/                    Without any parameters, encode message
 #/   -d               Decode message
-#/
 #/   -h | --help      Display this help message
 
 set -e
@@ -16,7 +15,7 @@ set -u
 
 usage() {
     # Display usage message
-    printf "\n%b\n" "$(grep '^#/' "$0" | cut -c4-)" && exit 0
+    printf "%b\n" "$(grep '^#/' "$0" | cut -c4-)" && exit 0
 }
 
 set_command() {

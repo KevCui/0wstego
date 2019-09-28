@@ -1,12 +1,12 @@
 #!/usr/bin/env bats
 #
 # How to run:
-#   ~$ bats test/0wstega.bats
+#   ~$ bats test/0wstego.bats
 
 BATS_TEST_SKIPPED=
 
 setup() {
-    _SCRIPT="./0wstega.sh"
+    _SCRIPT="./0wstego.sh"
     _PERL="$(command -v perl)"
 
     source $_SCRIPT
