@@ -3,15 +3,11 @@
 # Hide/Reveal message using zero-width characters
 #
 #/ Usage:
-#/   ./0wstega.sh [-t <visible_MESSAGE> -m <hidden_MESSAGE>|-d]
+#/   ./0wstega.sh [-d]
 #/
 #/ Options:
-#/   - Encode
-#/     -t <message>   Set visible message
-#/     -m <message>   Set hidden message
-#/
-#/   - Decode
-#/     -d             Decode encoded message
+#/                    Without any parameters, encode message
+#/   -d               Decode message
 #/
 #/   -h | --help      Display this help message
 
@@ -33,14 +29,8 @@ set_args() {
     expr "$*" : ".*--help" > /dev/null && usage
 
     _ENCODE_PROCESS=true
-    while getopts ":hdt:m:" opt; do
+    while getopts ":hd" opt; do
         case $opt in
-            t)
-                _VISIBLE_MESSAGE="$OPTARG"
-                ;;
-            m)
-                _HIDDEN_MESSAGE="$OPTARG"
-                ;;
             d)
                 _ENCODE_PROCESS=false
                 ;;
@@ -53,12 +43,6 @@ set_args() {
                 ;;
         esac
     done
-}
-
-check_args() {
-    if [[ "$_ENCODE_PROCESS" == true && (-z "${_VISIBLE_MESSAGE:-}" || -z "${_HIDDEN_MESSAGE:-}") ]]; then
-        echo "Missing message: -t <visible_MESSAGE> -m <hidden_MESSAGE>" && usage
-    fi
 }
 
 command_not_found() {
@@ -118,7 +102,7 @@ bin2zerowidth() {
     done
 }
 
-input_message() {
+input_encoded_message() {
     # Prompt for encoded message
     local txt
     echo -n "Paste encoded message here: " >&2
@@ -126,25 +110,44 @@ input_message() {
     printf %b "$txt"
 }
 
+input_visible_message() {
+    # Prompt for visible message
+    local txt
+    echo -n "Visible message: " >&2
+    read -r txt
+    printf %b "$txt"
+}
+
+input_hidden_message() {
+    # Prompt for hidden message
+    local txt
+    echo -n "Secret message to hide: " >&2
+    read -r txt
+    printf %b "$txt"
+}
+
 start_encode() {
     # Encode message
-    # $1: visible message
-    # $2: hidden message
-    printf "%b%b" "$(bin2zerowidth "$(ascii2bin "$2")")" "$1"
+    local v h
+    v="$(input_visible_message)"
+    h="$(input_hidden_message)"
+
+    printf "%b%b" "$(bin2zerowidth "$(ascii2bin "$h")")" "$v"
 }
 
 start_decode() {
     # Decode message
-    bin2ascii "$(zerowidth2bin "$(input_message)")"
+    local h
+    h="$(input_encoded_message)"
+    bin2ascii "$(zerowidth2bin "$h")"
 }
 
 main() {
     set_args "$@"
-    check_args
     set_command
 
     if [[ "$_ENCODE_PROCESS" == true ]]; then
-        start_encode "$_VISIBLE_MESSAGE" "$_HIDDEN_MESSAGE"
+        start_encode
     else
         start_decode
     fi

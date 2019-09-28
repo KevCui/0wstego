@@ -25,31 +25,6 @@ setup() {
     [ "${lines[1]}" = "Install from [31mbatsland[0m" ]
 }
 
-@test "CHECK: check_args(): all mandatory variables are set" {
-    _ENCODE_PROCESS=true
-    _VISIBLE_MESSAGE="toto"
-    _HIDDEN_MESSAGE="secret"
-    run check_args
-    [ "$status" -eq 0 ]
-    [ "$output" = "" ]
-}
-
-@test "CHECK: check_var(): no \$_VISIBLE_MESSAGE" {
-    _ENCODE_PROCESS=true
-    _HIDDEN_MESSAGE="secret"
-    run check_args
-    [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "Missing message: -t <visible_MESSAGE> -m <hidden_MESSAGE>" ]
-}
-
-@test "CHECK: check_var(): no \$_HIDDEN_MESSAGE" {
-    _ENCODE_PROCESS=true
-    _VISIBLE_MESSAGE="toto"
-    run check_args
-    [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "Missing message: -t <visible_MESSAGE> -m <hidden_MESSAGE>" ]
-}
-
 @test "CHECK: ascii2bin()" {
     run ascii2bin "toto"
     [ "$status" -eq 0 ]
@@ -99,13 +74,19 @@ setup() {
 }
 
 @test "CHECK: start_encode()" {
-    run start_encode "toto tata" "secret"
+    input_visible_message() {
+        printf %b "toto tata"
+    }
+    input_hidden_message() {
+        printf %b "secret"
+    }
+    run start_encode
     [ "$status" -eq 0 ]
     [ "$output" == "$(printf %b "‌​​​‌‌​​‌​​‌‌​‌​‌​​‌‌‌​​‌​​​‌‌​‌‌​​‌‌​‌​‌​​​‌​‌‌toto tata")" ]
 }
 
 @test "CHECK: start_decode()" {
-    input_message() {
+    input_encoded_message() {
         printf %b "‌​​​‌‌​​‌​​‌‌​‌​‌​​‌‌‌​​‌​​​‌‌​‌‌​​‌‌​‌​‌​​​‌​‌‌toto tata"
     }
     run start_decode
