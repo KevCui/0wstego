@@ -7,11 +7,12 @@
 
 ```
 Usage:
-  ./0wstego.sh [-d]
+  ./0wstega.sh [-d|-f <file_path>]
 
 Options:
                    Without any parameters, encode message
   -d               Decode message
+  -f <file_path>   Decode message in file
   -h | --help      Display this help message
 ```
 
@@ -23,11 +24,17 @@ Visible message: this is a visible sentence.
 Secret message to hide: secret message
 ```
 
-- Decode message:
+- Decode message from prompt:
 
 ```
 ~$ ./0wstego.sh -d
 Paste encoded message here: <paste>
+```
+
+- Decode message from file:
+
+```
+~$ ./0wstego.sh -f ~/secret.md
 ```
 
 ## Run tests
