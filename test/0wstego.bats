@@ -8,6 +8,7 @@ BATS_TEST_SKIPPED=
 setup() {
     _SCRIPT="./0wstego.sh"
     _PERL="$(command -v perl)"
+    _TEMP_FILE="/tmp/0wstego.tmp"
 
     source $_SCRIPT
 }
@@ -85,10 +86,18 @@ setup() {
     [ "$output" == "$(printf %b "‌​​​‌‌​​‌​​‌‌​‌​‌​​‌‌‌​​‌​​​‌‌​‌‌​​‌‌​‌​‌​​​‌​‌‌toto tata")" ]
 }
 
-@test "CHECK: start_decode()" {
+@test "CHECK: start_decode() input from prompt" {
     input_encoded_message() {
         printf %b "‌​​​‌‌​​‌​​‌‌​‌​‌​​‌‌‌​​‌​​​‌‌​‌‌​​‌‌​‌​‌​​​‌​‌‌toto tata"
     }
+    run start_decode
+    [ "$status" -eq 0 ]
+    [ "$output" == "secret" ]
+}
+
+@test "CHECK: start_decode() input from file" {
+    printf %b "‌​​​‌‌​​‌​​‌‌​‌​‌​​‌‌‌​​‌​​​‌‌​‌‌​​‌‌​‌​‌​​​‌​‌‌toto tata" > $_TEMP_FILE
+    _FILE_PATH="$_TEMP_FILE"
     run start_decode
     [ "$status" -eq 0 ]
     [ "$output" == "secret" ]

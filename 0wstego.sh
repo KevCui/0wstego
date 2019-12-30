@@ -3,11 +3,12 @@
 # Hide/Reveal message using zero-width characters
 #
 #/ Usage:
-#/   ./0wstega.sh [-d]
+#/   ./0wstega.sh [-d|-f <file_path>]
 #/
 #/ Options:
 #/                    Without any parameters, encode message
 #/   -d               Decode message
+#/   -f <file_path>   Decode message in file
 #/   -h | --help      Display this help message
 
 set -e
@@ -28,10 +29,14 @@ set_args() {
     expr "$*" : ".*--help" > /dev/null && usage
 
     _ENCODE_PROCESS=true
-    while getopts ":hd" opt; do
+    while getopts ":hdf:" opt; do
         case $opt in
             d)
                 _ENCODE_PROCESS=false
+                ;;
+            f)
+                _ENCODE_PROCESS=false
+                _FILE_PATH="$OPTARG"
                 ;;
             h)
                 usage
@@ -137,7 +142,11 @@ start_encode() {
 start_decode() {
     # Decode message
     local h
-    h="$(input_encoded_message)"
+    if [[ -z "${_FILE_PATH:-}" ]]; then
+        h="$(input_encoded_message)"
+    else
+        h="$(cat $_FILE_PATH)"
+    fi
     bin2ascii "$(zerowidth2bin "$h")"
 }
 
