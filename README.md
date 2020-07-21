@@ -1,5 +1,4 @@
-0wstego
-=======
+# 0wstego ![CI](https://github.com/KevCui/0wstego/workflows/CI/badge.svg)
 
 0wstego \ō-ste-gə\ is a script using zero-width characters to hide secret message inside normal message. It's also capable to reveal secret message encoded by itself for sure :simple_smile:.
 
